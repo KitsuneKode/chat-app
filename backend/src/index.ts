@@ -80,12 +80,15 @@ wss.on('connection', (socket) => {
 
     if (messageFromClient?.type === 'chat') {
       const socketsToBroadcast = Rooms.get(messageFromClient.payload.room);
-      const client = Clients.get(socket);
-      socketsToBroadcast?.forEach((socket) => {
-        socket.send(
-          'Sent by ' + client + ' : ' + messageFromClient?.payload?.message
-        );
-      });
+
+      if (socketsToBroadcast?.has(socket)) {
+        const client = Clients.get(socket);
+        socketsToBroadcast?.forEach((socket) => {
+          socket.send(
+            'Sent by ' + client + ' : ' + messageFromClient?.payload?.message
+          );
+        });
+      }
     }
   });
 
